@@ -1,0 +1,98 @@
+Steps 1: Dependencies
+
+uv init .
+
+uv run main.py
+Using CPython 3.12.4 interpreter at: C:\Program Files\Python312\python.exe
+Creating virtual environment at: .venv
+Hello from chatbot!                                                                                                                                
+
+
+uv add langgraph langchain python-dotenv
+uv add langchain-openai
+
+2. Open Ai Api key
+create .env file -- means environment variable --> here we are gonna pass our api key
+get it from https://platform.openai.com/api-keys
+
+
+from langchain_core.message import HumanMessage # this allows us to create messages from humans
+from langchain_openai import ChatOpenAI # to connect to OpenAI through API and use LLMs and keep it running
+from lanchain.tools import tool # to create tools that can be used by the agent to perform specific tasks
+from langgraph.prebuilt import create_react_agent # to create an agent that can reason and act based on the tools available
+from dotenv import load_dotenv # to load environment variables from a .env file 
+
+
+'''
+Lang chain is high level framework to build applications powered by language models / ai applications. It provides abstractions and tools to simplify the development of LLM-based applications.
+Langgraph is a framework built on top of langchain that focuses on creating agents that can reason and act using tools. It provides prebuilt components and abstractions to facilitate the development of agent-based applications. It is a complex framework that allows developers to create intelligent agents capable of performing tasks autonomously by leveraging language models and tools.
+'''
+
+'''
+AI Agent vs chatbot
+An AI agent is a more advanced and autonomous system that can perform tasks, make decisions, and interact with its environment based on predefined goals and objectives. AI agents can reason, plan, and adapt their actions based on the information they receive. They can use tools and resources to achieve specific outcomes. AI agent has access to external tools and resources to perform tasks beyond just generating text responses. so they can perform actions like searching the web, accessing databases, or executing commands beyond just generating text responses.
+
+A chatbot, on the other hand, is a specific type of AI agent that is designed primarily for conversational interactions with users. Chatbots are typically focused on generating text-based responses to user inputs in a conversational manner. They may not have the same level of autonomy or decision-making capabilities as more advanced AI agents. Chatbots are often used for customer support, information retrieval, or simple interactions where the primary goal is to provide relevant responses to user queries.
+'''
+
+uv add langchain-google-genai
+GOOGLE_API_KEY=your_key_here
+uv add langchain langchain-core langchain-community langchain-google-genai python-dotenv langchainhub
+
+
+💡 3️⃣ Alternative: Use Groq (Llama 3, free)
+
+If you prefer Meta’s Llama 3 models (super fast, free tier), you can use:
+
+uv add langchain-groq
+
+
+Then replace:
+
+from langchain_openai import ChatOpenAI
+
+
+with:
+
+from langchain_groq import ChatGroq
+model = ChatGroq(model="llama3-8b-8192", api_key="your_groq_api_key")
+
+
+Get your free Groq key from:https://console.groq.com/
+
+
+load_dotenv()   # Load environment variables from .env file in the current directory-- api key is stored here
+
+# Initialize the ChatOpenAI model
+
+def main():
+    model = ChatOpenAI( temperature=0)  # Set temperature to 0 for deterministic responses -- higher temperature means more randomness so 0 is more precise
+
+    tools = []  # we will add tools here later
+
+    agent_executor = create_react_agent(model, tools)  # Create the ReAct agent with the model and tools, ReAct means reasoning and acting. crate_react_agent is a prebuilt function/model from langgraph, it automatically sets up the agent with ReAct framework and handles the interactions between the model and tools.
+
+    print("Hey there! I'm S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge.")
+    print("---------------------------------------------------")
+    print("Ask me anything, or type 'quit' if you’re done chatting.")
+    print("---------------------------------------------------")
+    print("So, how can I help you today?")
+
+    while True:
+        user_input = input('\nBuddy: ').strip()
+
+        if user_input.lower() =='quit':
+            print('\nS.P.A.R.K.: See you later, Buddy. Goodbye!')
+            break
+        print('\nS.P.A.R.K.: ', end="")
+
+        for chunk in agent_executor.stream({"messages":[HumanMessage(content=user_input)]}):
+            if "agent" in chunk  and "messages" in chunk['agent']:
+                for message in chunk['agent']['messages']:
+                    print(message.content, end="")
+        
+        print()
+
+
+if __name__ =="__main__":
+    main()

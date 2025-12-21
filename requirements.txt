@@ -1,0 +1,28 @@
+# Core Web Framework
+streamlit
+
+# Flask API Server
+flask>=3.0.0
+flask-cors>=4.0.0
+gunicorn
+
+# PDF Processing
+PyPDF2
+
+# Google AI
+google-generativeai>=0.7.0
+
+# LangChain
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+langchain-google-genai>=1.0.3
+
+# Environment Variables
+python-dotenv>=1.0.1
+
+# Computer Vision & Machine Learning (for ImageClassifier.py)
+opencv-python
+numpy
+Pillow
+tensorflow
