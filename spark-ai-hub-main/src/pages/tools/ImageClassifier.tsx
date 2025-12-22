@@ -62,7 +62,7 @@ export default function ImageClassifierPage() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
       const response = await fetch(`${API_URL}/api/image-classify`, {
         method: 'POST',
         body: formData,
