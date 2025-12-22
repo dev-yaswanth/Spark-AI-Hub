@@ -217,8 +217,11 @@ def chat():
         # Extract response content
         reply = ""
         if "messages" in response:
-            for msg in response["messages"]:
-                if hasattr(msg, "content"):
+            # The AI response is typically the last message in the sequence
+            # Search from the end to find the bot's reply
+            for msg in reversed(response["messages"]):
+                if hasattr(msg, "content") and msg.content:
+                    # Filter out any lingering internal objects if necessary, but content is what we want
                     reply = msg.content
                     break
         
