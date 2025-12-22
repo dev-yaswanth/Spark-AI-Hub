@@ -54,6 +54,25 @@ tools = []
 chat_agent = create_agent(chat_model, tools)
 
 
+# Helper Functions for Analytics
+def log_usage(tool_name):
+    """Log tool usage to Supabase or console"""
+    try:
+        entry = {
+            'timestamp': datetime.now().isoformat(),
+            'tool_name': tool_name,
+            'ip_address': request.remote_addr
+        }
+        
+        if supabase:
+            supabase.table('usage_logs').insert(entry).execute()
+            print(f"📊 Activity logged: {tool_name}")
+        else:
+            print(f"📊 Activity (Local): {tool_name}")
+    except Exception as e:
+        print(f"⚠️ Failed to log usage: {str(e)}")
+
+
 # Helper Functions for Resume Review
 def extract_text_from_pdf(pdf_file):
     """Extract text from PDF file"""
@@ -82,6 +101,7 @@ def preprocess_image_for_classification(image):
 @app.route('/api/resume-review', methods=['POST'])
 def resume_review():
     """Endpoint for resume review"""
+    log_usage('resume_review')
     try:
         # Check if file is present
         if 'file' not in request.files:
@@ -135,6 +155,7 @@ Please provide your analysis in a clear, structured format with specific recomme
 @app.route('/api/image-classify', methods=['POST'])
 def image_classify():
     """Endpoint for image classification"""
+    log_usage('image_classify')
     try:
         # Check if file is present
         if 'file' not in request.files:
@@ -178,6 +199,7 @@ def image_classify():
 @app.route('/api/chat', methods=['POST'])
 def chat():
     """Endpoint for chat functionality"""
+    log_usage('chatbot')
     try:
         data = request.get_json()
         
@@ -250,6 +272,38 @@ def get_messages():
             'count': len(messages),
             'messages': messages
         })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/stats', methods=['GET'])
+def get_stats():
+    """Endpoint for admin to view usage statistics"""
+    secret_key = request.args.get('key')
+    admin_secret = os.getenv("ADMIN_SECRET_KEY", "spark_admin_2025")
+    
+    if not secret_key or secret_key != admin_secret:
+        return jsonify({'error': 'Unauthorized'}), 401
+        
+    try:
+        if supabase:
+            # Fetch usage logs from Supabase
+            result = supabase.table('usage_logs').select("tool_name").execute()
+            logs = result.data
+            
+            # Count occurrences
+            stats = {}
+            for log in logs:
+                tool = log['tool_name']
+                stats[tool] = stats.get(tool, 0) + 1
+                
+            return jsonify({
+                'success': True,
+                'total_uses': len(logs),
+                'breakdown': stats
+            })
+        else:
+            return jsonify({'error': 'Statistics require Supabase connection'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
