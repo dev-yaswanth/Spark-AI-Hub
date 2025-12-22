@@ -49,7 +49,7 @@ else:
 image_model = MobileNetV2(weights="imagenet")
 
 # Initialize Chat Model
-chat_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0)
+chat_model = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
 tools = []
 chat_agent = create_agent(chat_model, tools)
 
@@ -140,7 +140,7 @@ Resume content:
 Please provide your analysis in a clear, structured format with specific recommendations."""
         
         # Get AI response
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         
         return jsonify({
