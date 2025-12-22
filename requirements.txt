@@ -24,6 +24,7 @@ supabase>=2.0.0
 
 # Search Capabilities
 duckduckgo-search
+ddgs
 
 # Computer Vision & Machine Learning (for ImageClassifier.py)
 opencv-python

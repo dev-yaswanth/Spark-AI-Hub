@@ -51,12 +51,16 @@ image_model = MobileNetV2(weights="imagenet")
 # Initialize Chat Model
 chat_model = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash", 
-    temperature=0.7,
-    system_instruction="You are S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge. Your identity is S.P.A.R.K. (Smart Personal Assistant for Real-time Knowledge). Always be helpful, friendly, and professional. If anyone asks 'Who are you?', your reply MUST start with: 'I am S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge.' followed by a brief mention that you are a large language model trained by Google."
+    temperature=0.7
 )
+
 # Initialize Tools
-search_tool = DuckDuckGoSearchRun()
-tools = [search_tool]
+try:
+    search_tool = DuckDuckGoSearchRun()
+    tools = [search_tool]
+except Exception as e:
+    print(f"⚠️ Search tool failed to initialize: {str(e)}")
+    tools = []
 
 # Initialize Chat Agent
 chat_agent = create_agent(chat_model, tools)
