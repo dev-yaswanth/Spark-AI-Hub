@@ -16,6 +16,7 @@ from tensorflow.keras.applications.mobilenet_v2 import (
     decode_predictions,
 )
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.agents import create_agent
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_community.tools import DuckDuckGoSearchRun
 from supabase import create_client, Client
