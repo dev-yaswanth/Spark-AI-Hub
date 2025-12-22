@@ -16,8 +16,8 @@ from tensorflow.keras.applications.mobilenet_v2 import (
     decode_predictions,
 )
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.agents import create_agent
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_community.tools import DuckDuckGoSearchRun
 from supabase import create_client, Client
 
 # Load environment variables
@@ -54,7 +54,11 @@ chat_model = ChatGoogleGenerativeAI(
     temperature=0.7,
     system_instruction="You are S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge. Your identity is S.P.A.R.K. (Smart Personal Assistant for Real-time Knowledge). Always be helpful, friendly, and professional. If anyone asks 'Who are you?', your reply MUST start with: 'I am S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge.' followed by a brief mention that you are a large language model trained by Google."
 )
-tools = []
+# Initialize Tools
+search_tool = DuckDuckGoSearchRun()
+tools = [search_tool]
+
+# Initialize Chat Agent
 chat_agent = create_agent(chat_model, tools)
 
 
@@ -216,7 +220,7 @@ def chat():
             return jsonify({'error': 'Message cannot be empty'}), 400
         
         # Get AI response
-        system_msg = SystemMessage(content="You are S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge. Your identity is S.P.A.R.K. (Smart Personal Assistant for Real-time Knowledge). Always be helpful, friendly, and professional. If anyone asks 'Who are you?', your reply MUST start with: 'I am S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge.' followed by a brief mention that you are a large language model trained by Google.")
+        system_msg = SystemMessage(content="You are S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge. Your identity is S.P.A.R.K. (Smart Personal Assistant for Real-time Knowledge). You have access to a web search tool. Use it whenever you need current information, news, weather, or real-time data. Always be helpful, friendly, and professional. If anyone asks 'Who are you?', your reply MUST start with: 'I am S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge.' followed by a brief mention that you are a large language model trained by Google.")
         response = chat_agent.invoke({"messages": [system_msg, HumanMessage(content=user_message)]})
         
         # Extract response content
