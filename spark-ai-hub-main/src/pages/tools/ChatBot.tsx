@@ -124,7 +124,7 @@ export default function ChatBotPage() {
                         }`}
                     >
                       <div className="text-xs font-semibold mb-1 opacity-70">
-                        {message.role === 'user' ? 'You' : 'S.P.A.R.K.'}
+                        {message.role === 'user' ? 'Buddy' : 'S.P.A.R.K.'}
                       </div>
                       <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                     </div>
