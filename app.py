@@ -18,6 +18,7 @@ from tensorflow.keras.applications.mobilenet_v2 import (
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import create_agent
 from langchain_core.messages import HumanMessage
+from supabase import create_client, Client
 
 # Load environment variables
 load_dotenv()
@@ -29,6 +30,20 @@ CORS(app)  # Enable CORS for all routes
 # Configure Google AI
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
+
+# Initialize Supabase Client
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase: Client = None
+
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+        print("✅ Supabase initialized successfully")
+    except Exception as e:
+        print(f"❌ Failed to initialize Supabase: {str(e)}")
+else:
+    print("⚠️ Supabase credentials missing. Local file storage will be used as fallback.")
 
 # Load Image Classification Model
 image_model = MobileNetV2(weights="imagenet")
@@ -202,8 +217,41 @@ def health_check():
     """Health check endpoint"""
     return jsonify({
         'status': 'healthy',
-        'message': 'SPARK AI Tools API is running'
+        'message': 'SPARK AI Tools API is running',
+        'database': 'connected' if supabase else 'local_only'
     })
+
+
+@app.route('/api/messages', methods=['GET'])
+def get_messages():
+    """Endpoint for admin to view messages"""
+    secret_key = request.args.get('key')
+    admin_secret = os.getenv("ADMIN_SECRET_KEY", "spark_admin_2025")
+    
+    if not secret_key or secret_key != admin_secret:
+        return jsonify({'error': 'Unauthorized'}), 401
+        
+    try:
+        if supabase:
+            # Fetch from Supabase
+            result = supabase.table('messages').select("*").order('timestamp', desc=True).execute()
+            messages = result.data
+        else:
+            # Fallback to local file
+            file_path = 'data/messages.json'
+            if os.path.exists(file_path):
+                with open(file_path, 'r') as f:
+                    messages = json.load(f)
+            else:
+                messages = []
+                
+        return jsonify({
+            'success': True,
+            'count': len(messages),
+            'messages': messages
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/api/contact', methods=['POST'])
@@ -246,7 +294,15 @@ def contact():
         # Append new message
         messages.append(new_message)
         
-        # Save back to file
+        # Save to Supabase if available
+        if supabase:
+            try:
+                supabase.table('messages').insert(new_message).execute()
+                print(f"✅ Message from {name} saved to Supabase")
+            except Exception as e:
+                print(f"❌ Failed to save to Supabase: {str(e)}")
+        
+        # Save back to local file (as backup)
         with open(file_path, 'w') as f:
             json.dump(messages, f, indent=4)
             

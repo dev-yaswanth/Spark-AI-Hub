@@ -20,6 +20,7 @@ langchain-google-genai>=1.0.3
 
 # Environment Variables
 python-dotenv>=1.0.1
+supabase>=2.0.0
 
 # Computer Vision & Machine Learning (for ImageClassifier.py)
 opencv-python
