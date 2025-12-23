@@ -25,11 +25,25 @@ export default function ChatBotPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = (force = false) => {
+    if (scrollRef.current) {
+      const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (viewport) {
+        if (force) {
+          viewport.scrollTop = viewport.scrollHeight;
+        } else {
+          const { scrollTop, scrollHeight, clientHeight } = viewport;
+          const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
+          if (isAtBottom) {
+            viewport.scrollTop = viewport.scrollHeight;
+          }
+        }
+      }
+    }
   };
 
   useEffect(() => {
+    // Only auto-scroll if the user is already at the bottom
     scrollToBottom();
   }, [messages, isLoading]);
 
@@ -110,10 +124,10 @@ export default function ChatBotPage() {
       status="live"
     >
       <div className="mt-8">
-        <Card className="min-h-[500px] max-h-[700px] flex flex-col shadow-xl gradient-border">
-          <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
-            <ScrollArea className="flex-1 p-4 md:p-6">
-              <div className="space-y-4">
+        <Card className="h-[700px] flex flex-col shadow-xl gradient-border">
+          <CardContent className="flex-1 flex flex-col p-0 overflow-hidden relative">
+            <ScrollArea className="h-full w-full" ref={scrollRef}>
+              <div className="p-4 md:p-6 space-y-4">
                 {messages.map((message, index) => (
                   <div
                     key={index}
