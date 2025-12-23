@@ -23,13 +23,15 @@ export default function ChatBotPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    // Scroll to bottom when messages change
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
+    scrollToBottom();
+  }, [messages, isLoading]);
 
   const handleSend = async () => {
     if (!input.trim()) {
@@ -108,9 +110,9 @@ export default function ChatBotPage() {
       status="live"
     >
       <div className="mt-8">
-        <Card className="h-[600px] flex flex-col">
-          <CardContent className="flex-1 flex flex-col p-0">
-            <ScrollArea className="flex-1 p-6" ref={scrollRef}>
+        <Card className="min-h-[500px] max-h-[700px] flex flex-col shadow-xl gradient-border">
+          <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
+            <ScrollArea className="flex-1 p-4 md:p-6">
               <div className="space-y-4">
                 {messages.map((message, index) => (
                   <div
@@ -142,6 +144,7 @@ export default function ChatBotPage() {
                     </div>
                   </div>
                 )}
+                <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
 
