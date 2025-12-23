@@ -98,16 +98,16 @@ export default function ImageClassifierPage() {
   return (
     <ToolPageLayout
       icon={ImageIcon}
-      title="AI Image Classifier"
-      description="Upload an image and get intelligent classification results with confidence scores."
-      longDescription="Our AI Image Classifier uses advanced computer vision models to analyze and categorize images with high accuracy. Simply upload an image and receive detailed classification results along with confidence scores. Perfect for content moderation, image organization, and automated tagging workflows."
+      title="AI Image Identifier"
+      description="Upload a photo and S.P.A.R.K. will tell you what's in it!"
+      longDescription="Ever wondered what exactly is in an image? Our AI Image Identifier uses advanced vision models to scan your photos and identify objects, scenes, and themes instantly. It's like having a smart set of eyes that can recognize almost anything!"
       features={[
-        "Multi-label classification",
-        "Confidence score reporting",
-        "Support for common image formats",
-        "Fast processing times",
-        "Detailed category breakdown",
-        "Batch processing support",
+        "Identifies objects and scenes",
+        "Super fast results",
+        "Supports JPG and PNG",
+        "Gives you a confidence score",
+        "Simple upload and identify",
+        "Great for photo organizing",
       ]}
       status="live"
     >

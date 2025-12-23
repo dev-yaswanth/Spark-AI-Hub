@@ -1,17 +1,17 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Code2, Cpu, Server, Rocket } from "lucide-react";
+import { Code2, Cpu, Server, Rocket, Layout, Database, Globe, Zap, Search } from "lucide-react";
 
 const techStack = [
   {
-    icon: Code2,
-    label: "Backend",
-    value: "Python",
+    icon: Cpu,
+    label: "Intelligence",
+    value: "Google Gemini",
   },
   {
-    icon: Rocket,
-    label: "Frontend",
-    value: "React & Vite",
+    icon: Code2,
+    label: "Orchestration",
+    value: "LangChain",
   },
   {
     icon: Server,
@@ -19,14 +19,29 @@ const techStack = [
     value: "Flask (Python)",
   },
   {
-    icon: Cpu,
-    label: "AI",
-    value: "LLMs, RAG, ML Models",
+    icon: Layout,
+    label: "Frontend",
+    value: "React & Vite",
   },
   {
-    icon: Rocket,
-    label: "Status",
-    value: "Deployment Ready",
+    icon: Database,
+    label: "Persistence",
+    value: "Supabase",
+  },
+  {
+    icon: Zap,
+    label: "Styling",
+    value: "Tailwind CSS",
+  },
+  {
+    icon: Search,
+    label: "Knowledge",
+    value: "DuckDuckGo API",
+  },
+  {
+    icon: Globe,
+    label: "Deployment",
+    value: "Vercel & Render",
   },
 ];
 

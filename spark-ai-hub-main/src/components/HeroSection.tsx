@@ -1,7 +1,13 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, ArrowRight, Zap } from "lucide-react";
+import { Sparkles, ArrowRight, Zap, LucideIcon } from "lucide-react";
+
+const Spark = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
+  <div className={`absolute w-3 h-5 rounded-full border border-primary/20 flex items-start justify-center p-1 pointer-events-none ${className}`} style={style}>
+    <div className="w-1 h-1 bg-primary rounded-full animate-pulse" />
+  </div>
+);
 
 export function HeroSection() {
   return (
@@ -13,6 +19,12 @@ export function HeroSection() {
       {/* Radial gradient glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-primary/10 rounded-full blur-2xl animate-float" />
+
+      {/* Geometric Sparks */}
+      <Spark className="top-[20%] left-[15%] rotate-12 opacity-40 animate-float" />
+      <Spark className="top-[35%] right-[20%] -rotate-12 opacity-30 animate-float" style={{ animationDelay: '1.5s' }} />
+      <Spark className="bottom-[30%] left-[25%] rotate-45 opacity-20 animate-float" style={{ animationDelay: '3s' }} />
+      <Spark className="top-[60%] right-[10%] -rotate-45 opacity-25 animate-float" style={{ animationDelay: '0.5s' }} />
 
       {/* Content */}
       <div className="container relative z-10 px-4 py-20 text-center">

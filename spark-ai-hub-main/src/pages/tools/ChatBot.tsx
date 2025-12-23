@@ -56,8 +56,9 @@ export default function ChatBotPage() {
     const userMessage = input.trim();
     setInput("");
 
-    // Add user message to chat
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    // Add user message to chat state
+    const currentMessages: Message[] = [...messages, { role: 'user', content: userMessage }];
+    setMessages(currentMessages);
     setIsLoading(true);
 
     try {
@@ -67,7 +68,7 @@ export default function ChatBotPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({ messages: currentMessages }),
       });
 
       const data = await response.json();
@@ -111,16 +112,16 @@ export default function ChatBotPage() {
   return (
     <ToolPageLayout
       icon={MessageSquare}
-      title="AI Chat Bot"
-      description="Conversational assistant for real-time questions and insights powered by advanced language models."
-      longDescription="Our AI Chat Bot leverages state-of-the-art large language models to provide intelligent, context-aware responses to your queries. Whether you need help with research, brainstorming ideas, answering questions, or just having a conversation, this tool delivers accurate and helpful responses in real-time."
+      title="AI Chat Assistant"
+      description="Your friendly AI buddy for quick answers, coding help, and interesting conversations."
+      longDescription="S.P.A.R.K. is a smart conversational assistant designed to help you with anything. Whether you need a bug fixed in your code, help writing an email, or just want to know about current events, S.P.A.R.K. is ready to help 24/7 with a friendly personality."
       features={[
-        "Natural language understanding",
-        "Context-aware conversations",
-        "Multi-turn dialogue support",
-        "Real-time response generation",
-        "Knowledge-based answers",
-        "Customizable personality",
+        "Quick, real-time answers",
+        "Smart coding and debugging help",
+        "Friendly and helpful persona",
+        "Remembers your conversation context",
+        "Web search for latest information",
+        "Very easy to use",
       ]}
       status="live"
     >

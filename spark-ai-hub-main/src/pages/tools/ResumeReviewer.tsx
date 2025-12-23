@@ -3,14 +3,19 @@ import { FileText, Upload, Loader2 } from "lucide-react";
 import React, { useState, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import ReactMarkdown from 'react-markdown';
+import { Progress } from "@/components/ui/progress";
 
 export default function ResumeReviewerPage() {
   const [file, setFile] = useState<File | null>(null);
   const [jobRole, setJobRole] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
   const [analysis, setAnalysis] = useState("");
+  const [atsScore, setAtsScore] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -30,6 +35,7 @@ export default function ResumeReviewerPage() {
 
       setFile(selectedFile);
       setAnalysis(""); // Clear previous analysis
+      setAtsScore(null);
     }
   };
 
@@ -45,11 +51,13 @@ export default function ResumeReviewerPage() {
 
     setIsLoading(true);
     setAnalysis("");
+    setAtsScore(null);
 
     try {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('jobRole', jobRole);
+      formData.append('jobDescription', jobDescription);
 
       const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
       const response = await fetch(`${API_URL}/api/resume-review`, {
@@ -61,6 +69,7 @@ export default function ResumeReviewerPage() {
 
       if (data.success) {
         setAnalysis(data.analysis);
+        setAtsScore(data.ats_score);
         toast({
           title: "Analysis Complete",
           description: "Your resume has been analyzed successfully.",
@@ -87,16 +96,16 @@ export default function ResumeReviewerPage() {
   return (
     <ToolPageLayout
       icon={FileText}
-      title="AI Resume Reviewer"
-      description="ATS scoring, role-based feedback, and actionable improvement suggestions for your resume."
-      longDescription="Optimize your resume with our AI-powered Resume Reviewer. This tool analyzes your resume against Applicant Tracking System (ATS) criteria, provides role-specific feedback, and offers actionable suggestions to improve your chances of landing interviews. Get professional-grade resume analysis instantly."
+      title="AI Resume Critic"
+      description="Get brutally honest feedback on your resume and see your ATS match score."
+      longDescription="Stop wondering why you aren't getting interviews. Our AI Resume Critic tears apart your resume to find red flags and keyword gaps. We give you a 'Brutally Honest' score and tell you exactly how to fix your resume for your dream job description."
       features={[
-        "ATS compatibility scoring",
-        "Role-specific feedback",
-        "Keyword optimization suggestions",
-        "Format and structure analysis",
-        "Actionable improvement tips",
-        "Industry-specific recommendations",
+        "Brutally honest feedback",
+        "ATS compatibility score",
+        "Specific job matching",
+        "Finds hidden red flags",
+        "Action plan to fix errors",
+        "Optimized for real recruiters",
       ]}
       status="live"
     >
@@ -139,6 +148,19 @@ export default function ResumeReviewerPage() {
                 />
               </div>
 
+              <div>
+                <Label htmlFor="job-description" className="text-base font-medium">
+                  Job Description (Optional)
+                </Label>
+                <Textarea
+                  id="job-description"
+                  placeholder="Paste the job description here for a tailored, brutally honest analysis..."
+                  value={jobDescription}
+                  onChange={(e) => setJobDescription(e.target.value)}
+                  className="mt-2 min-h-[120px]"
+                />
+              </div>
+
               <Button
                 onClick={handleAnalyze}
                 disabled={!file || isLoading}
@@ -162,14 +184,38 @@ export default function ResumeReviewerPage() {
         </Card>
 
         {analysis && (
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="text-xl font-semibold mb-4">Analysis Results</h3>
-              <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
-                {analysis}
-              </div>
-            </CardContent>
-          </Card>
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {atsScore !== null && (
+              <Card className="border-primary/20 bg-primary/5">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-semibold flex items-center justify-between">
+                    ATS Match Score
+                    <span className={`text-2xl font-bold ${atsScore >= 70 ? 'text-green-500' : atsScore >= 40 ? 'text-orange-500' : 'text-red-500'}`}>
+                      {atsScore}%
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Progress value={atsScore} className="h-3 grow-orange" />
+                  <p className="text-xs text-muted-foreground mt-2">
+                    This score represents how well your resume matches standard industry patterns and the target role.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card className="shadow-lg">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2 mb-6 pb-2 border-b">
+                  <FileText className="h-5 w-5 text-primary" />
+                  <h3 className="text-xl font-bold text-foreground">Detailed Analysis</h3>
+                </div>
+                <div className="prose prose-sm prose-invert max-w-none prose-headings:text-foreground prose-strong:text-foreground/90 prose-p:text-foreground/80">
+                  <ReactMarkdown>{analysis}</ReactMarkdown>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
       </div>
     </ToolPageLayout>

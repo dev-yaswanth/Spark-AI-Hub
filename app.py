@@ -16,8 +16,9 @@ from tensorflow.keras.applications.mobilenet_v2 import (
     decode_predictions,
 )
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.agents import create_agent
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain.agents import initialize_agent, AgentType
+from langchain.memory import ConversationBufferMemory
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_community.tools import DuckDuckGoSearchRun
 from supabase import create_client, Client
 
@@ -51,7 +52,7 @@ image_model = MobileNetV2(weights="imagenet")
 
 # Initialize Chat Model
 chat_model = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash", 
+    model="gemini-1.5-flash", 
     temperature=0.7
 )
 
@@ -63,8 +64,16 @@ except Exception as e:
     print(f"⚠️ Search tool failed to initialize: {str(e)}")
     tools = []
 
-# Initialize Chat Agent
-chat_agent = create_agent(chat_model, tools)
+# Initialize Chat Agent with Memory and ReAct architecture
+memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+chat_agent = initialize_agent(
+    tools,
+    chat_model,
+    agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
+    verbose=True,
+    memory=memory,
+    handle_parsing_errors=True
+)
 
 
 # Helper Functions for Analytics
@@ -122,6 +131,7 @@ def resume_review():
         
         file = request.files['file']
         job_role = request.form.get('jobRole', '')
+        job_description = request.form.get('jobDescription', '')
         
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
@@ -138,27 +148,60 @@ def resume_review():
             return jsonify({'error': 'File does not have any content'}), 400
         
         # Create prompt for AI analysis
-        prompt = f"""You are an expert resume reviewer with years of experience in HR and recruitment.
+        prompt = f"""You are a brutally honest, zero-fluff recruitment critic and expert resume reviewer. 
+Your goal is to tear apart this resume and give the candidate the harsh truth they need to hear to actually get hired. NO SUGAR-COATING.
 
-Please analyze this resume and provide constructive feedback. 
-Focus on the following aspects:
-1. Content clarity and impact
-2. Skills presentation
-3. Experience descriptions
-4. Specific improvements for {job_role if job_role else 'general job applications'}
+Analyze the resume for the role of: {job_role if job_role else 'General Role'}
+{"Compare it strictly against this Job Description:" if job_description else ""}
+{job_description if job_description else ""}
+
+Focus on:
+1. Hard Truths: What is objectively wrong or weak?
+2. Red Flags: Why would a recruiter toss this in the trash in 5 seconds?
+3. Keyword Gaps: What essential skills are missing?
+4. Formatting Nightmares: Is it readable for an ATS?
+
+IMPORTANT: You must also provide a numerical ATS compatibility score between 0 and 100. Be strict. If it's bad, give it a low score.
+
+Format your response as follows:
+ATS Score: [Score]
+Analysis:
+[Your brutal, honest, and direct feedback here in markdown format. Use bolding and headers for emphasis.]
+
+Actionable Suggestions:
+[A numbered list of specific steps the candidate must take to fix the issues identified.]
 
 Resume content:
-{file_content}
-
-Please provide your analysis in a clear, structured format with specific recommendations."""
+{file_content}"""
         
         # Get AI response
         model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
+        text = response.text
         
+        # Parse ATS score and analysis
+        ats_score = 0
+        analysis_text = text
+        
+        if "ATS Score:" in text:
+            try:
+                score_part = text.split("ATS Score:")[1].split("\n")[0].strip()
+                # Remove any non-numeric characters like '%'
+                score_str = "".join(filter(str.isdigit, score_part))
+                if score_str:
+                    ats_score = int(score_str)
+                
+                if "Analysis:" in text:
+                    analysis_text = text.split("Analysis:")[1].strip()
+                else:
+                    analysis_text = text.split(score_part)[1].strip()
+            except:
+                pass
+
         return jsonify({
             'success': True,
-            'analysis': response.text
+            'analysis': analysis_text,
+            'ats_score': ats_score
         })
     
     except Exception as e:
@@ -214,30 +257,32 @@ def chat():
     """Endpoint for chat functionality"""
     log_usage('chatbot')
     try:
-        data = request.get_json()
+        data = request.json
+        history = data.get('messages', [])
         
-        if not data or 'message' not in data:
-            return jsonify({'error': 'No message provided'}), 400
+        # Prepend system persona with today's date for grounding
+        today = datetime.now().strftime("%B %d, %Y")
+        system_content = f"You are S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge. Today's date is {today}. Your identity is S.P.A.R.K. (Smart Personal Assistant for Real-time Knowledge). You have access to a web search tool. Use it whenever you need current information, news, weather, or real-time data. Always be helpful, friendly, and professional. If anyone asks 'Who are you?', your reply MUST start with: 'I am S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge.' followed by a brief mention that you are a large language model trained by Google."
         
-        user_message = data['message']
+        # Format history for the agent
+        chat_history = []
+        for msg in history[:-1]: # All but the last one
+            if msg.get('role') == 'user':
+                chat_history.append(HumanMessage(content=msg.get('content', '')))
+            elif msg.get('role') == 'assistant':
+                chat_history.append(AIMessage(content=msg.get('content', '')))
         
-        if not user_message.strip():
-            return jsonify({'error': 'Message cannot be empty'}), 400
+        # Get the latest message
+        latest_message = history[-1].get('content', '') if history else data.get('message', '')
         
-        # Get AI response
-        system_msg = SystemMessage(content="You are S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge. Your identity is S.P.A.R.K. (Smart Personal Assistant for Real-time Knowledge). You have access to a web search tool. Use it whenever you need current information, news, weather, or real-time data. Always be helpful, friendly, and professional. If anyone asks 'Who are you?', your reply MUST start with: 'I am S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge.' followed by a brief mention that you are a large language model trained by Google.")
-        response = chat_agent.invoke({"messages": [system_msg, HumanMessage(content=user_message)]})
+        # Get AI response using the agent
+        response = chat_agent.invoke({
+            "input": latest_message,
+            "chat_history": chat_history,
+            "system_message": system_content
+        })
         
-        # Extract response content
-        reply = ""
-        if "messages" in response:
-            # The AI response is typically the last message in the sequence
-            # Search from the end to find the bot's reply
-            for msg in reversed(response["messages"]):
-                if hasattr(msg, "content") and msg.content:
-                    # Filter out any lingering internal objects if necessary, but content is what we want
-                    reply = msg.content
-                    break
+        reply = response.get("output", "I'm sorry, I couldn't process that.")
         
         if not reply:
             reply = str(response)
