@@ -32,9 +32,9 @@ const liveTools = [
   },
   {
     icon: BookOpen,
-    title: "Document Assistant (Beta)",
+    title: "Document Assistant",
     description: "Chat with your documents to find information.",
-    status: "live" as const,
+    status: "beta" as const,
     href: "/tools/knowledge-assistant",
   },
 ];

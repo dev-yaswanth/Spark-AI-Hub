@@ -6,7 +6,7 @@ export default function KnowledgeAssistantPage() {
   return (
     <ToolPageLayout
       icon={BookOpen}
-      title="Document Assistant (Beta)"
+      title="Document Assistant"
       description="Chat with your documents to find information."
       longDescription="Upload your documents to ask questions and find facts in seconds. Our assistant reads through your files so you don't have to."
       features={[
@@ -18,7 +18,7 @@ export default function KnowledgeAssistantPage() {
         "Instant data lookup",
       ]}
       demoUrl="https://your-rag-assistant.streamlit.app"
-      status="live"
+      status="beta"
     />
   );
 }

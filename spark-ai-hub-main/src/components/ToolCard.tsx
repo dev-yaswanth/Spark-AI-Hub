@@ -7,12 +7,13 @@ interface ToolCardProps {
   icon: LucideIcon;
   title: string;
   description: string;
-  status: "live" | "comingSoon";
+  status: "live" | "comingSoon" | "beta";
   href?: string;
 }
 
 export function ToolCard({ icon: Icon, title, description, status, href }: ToolCardProps) {
-  const isLive = status === "live";
+  const isLive = status === "live" || status === "beta";
+  const isBeta = status === "beta";
 
   const CardContent = (
     <>
@@ -35,8 +36,8 @@ export function ToolCard({ icon: Icon, title, description, status, href }: ToolC
           >
             {title}
           </h3>
-          <Badge variant={isLive ? (title.toLowerCase().includes("beta") ? "comingSoon" : "live") : "comingSoon"}>
-            {isLive ? (title.toLowerCase().includes("beta") ? "Beta" : "Live") : "Coming Soon"}
+          <Badge variant={isBeta ? "live" : (isLive ? "live" : "comingSoon")}>
+            {isBeta ? "Beta" : (isLive ? "Live" : "Coming Soon")}
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>

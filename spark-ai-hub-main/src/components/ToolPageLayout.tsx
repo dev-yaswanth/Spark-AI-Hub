@@ -13,7 +13,7 @@ interface ToolPageLayoutProps {
   longDescription: string;
   features: string[];
   demoUrl?: string;
-  status: "live" | "comingSoon";
+  status: "live" | "comingSoon" | "beta";
   children?: React.ReactNode;
 }
 
@@ -27,7 +27,8 @@ export function ToolPageLayout({
   status,
   children,
 }: ToolPageLayoutProps) {
-  const isLive = status === "live";
+  const isLive = status === "live" || status === "beta";
+  const isBeta = status === "beta";
 
   return (
     <div className="min-h-screen bg-background">
@@ -54,7 +55,7 @@ export function ToolPageLayout({
                     {title}
                   </h1>
                   <Badge variant={isLive ? "live" : "comingSoon"}>
-                    {isLive ? "Live" : "Coming Soon"}
+                    {isBeta ? "Beta" : isLive ? "Live" : "Coming Soon"}
                   </Badge>
                 </div>
                 <p className="text-lg text-muted-foreground">{description}</p>
