@@ -16,10 +16,11 @@ from tensorflow.keras.applications.mobilenet_v2 import (
     decode_predictions,
 )
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.agents import initialize_agent, AgentType
+from langchain.agents import create_react_agent, AgentExecutor
 from langchain.memory import ConversationBufferMemory
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_community.tools import DuckDuckGoSearchRun
+from langchain import hub
 from supabase import create_client, Client
 
 # Load environment variables
@@ -52,7 +53,7 @@ image_model = MobileNetV2(weights="imagenet")
 
 # Initialize Chat Model
 chat_model = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash", 
+    model="gemini-2.5-flash", 
     temperature=0.7
 )
 
@@ -66,10 +67,11 @@ except Exception as e:
 
 # Initialize Chat Agent with Memory and ReAct architecture
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-chat_agent = initialize_agent(
-    tools,
-    chat_model,
-    agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
+prompt = hub.pull("hwchase17/react-chat")
+agent = create_react_agent(chat_model, tools, prompt)
+chat_agent = AgentExecutor(
+    agent=agent,
+    tools=tools,
     verbose=True,
     memory=memory,
     handle_parsing_errors=True
@@ -278,8 +280,7 @@ def chat():
         # Get AI response using the agent
         response = chat_agent.invoke({
             "input": latest_message,
-            "chat_history": chat_history,
-            "system_message": system_content
+            "chat_history": chat_history
         })
         
         reply = response.get("output", "I'm sorry, I couldn't process that.")
