@@ -297,6 +297,22 @@ def chat():
         return jsonify({'error': str(e)}), 500
 
 
+
+@app.route('/', methods=['GET'])
+def index():
+    """Root endpoint for Hugging Face Spaces"""
+    return jsonify({
+        'status': 'active',
+        'message': 'Welcome to S.P.A.R.K. AI Tools API',
+        'docs_url': 'See README.md for API documentation',
+        'endpoints': {
+            'resume_review': '/api/resume-review',
+            'image_classify': '/api/image-classify',
+            'chat': '/api/chat'
+        }
+    })
+
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
