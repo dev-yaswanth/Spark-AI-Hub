@@ -15,12 +15,6 @@ from tensorflow.keras.applications.mobilenet_v2 import (
     preprocess_input,
     decode_predictions,
 )
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.agents import create_react_agent, AgentExecutor
-from langchain.memory import ConversationBufferMemory
-from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-from langchain_community.tools import DuckDuckGoSearchRun
-from langchain import hub
 from supabase import create_client, Client
 
 # Load environment variables
@@ -51,31 +45,20 @@ else:
 # Load Image Classification Model
 image_model = MobileNetV2(weights="imagenet")
 
-# Initialize Chat Model
-chat_model = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash", 
-    temperature=0.7
+
+# Initialize Chat Model with Google Search Grounding
+# Using Gemini's built-in search - no external APIs needed!
+chat_model_with_search = genai.GenerativeModel(
+    model_name='gemini-2.5-flash',
+    tools='google_search_retrieval'  # Built-in Google Search
 )
 
-# Initialize Tools
-try:
-    search_tool = DuckDuckGoSearchRun()
-    tools = [search_tool]
-except Exception as e:
-    print(f"⚠️ Search tool failed to initialize: {str(e)}")
-    tools = []
-
-# Initialize Chat Agent with Memory and ReAct architecture
-memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-prompt = hub.pull("hwchase17/react-chat")
-agent = create_react_agent(chat_model, tools, prompt)
-chat_agent = AgentExecutor(
-    agent=agent,
-    tools=tools,
-    verbose=True,
-    memory=memory,
-    handle_parsing_errors=True
+# Fallback model without search for non-search queries
+chat_model_basic = genai.GenerativeModel(
+    model_name='gemini-2.5-flash'
 )
+
+print("✅ Gemini models initialized with Google Search grounding")
 
 
 # Helper Functions for Analytics
@@ -262,31 +245,54 @@ def chat():
         data = request.json
         history = data.get('messages', [])
         
-        # Prepend system persona with today's date for grounding
-        today = datetime.now().strftime("%B %d, %Y")
-        system_content = f"You are S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge. Today's date is {today}. Your identity is S.P.A.R.K. (Smart Personal Assistant for Real-time Knowledge). You have access to a web search tool. Use it whenever you need current information, news, weather, or real-time data. Always be helpful, friendly, and professional. If anyone asks 'Who are you?', your reply MUST start with: 'I am S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge.' followed by a brief mention that you are a large language model trained by Google."
-        
-        # Format history for the agent
-        chat_history = []
-        for msg in history[:-1]: # All but the last one
-            if msg.get('role') == 'user':
-                chat_history.append(HumanMessage(content=msg.get('content', '')))
-            elif msg.get('role') == 'assistant':
-                chat_history.append(AIMessage(content=msg.get('content', '')))
-        
         # Get the latest message
         latest_message = history[-1].get('content', '') if history else data.get('message', '')
         
-        # Get AI response using the agent
-        response = chat_agent.invoke({
-            "input": latest_message,
-            "chat_history": chat_history
-        })
+        # Prepend system instructions
+        today = datetime.now().strftime("%B %d, %Y")
+        system_prompt = f"""You are S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge. 
+Today's date is {today}. 
+Your identity is S.P.A.R.K. (Smart Personal Assistant for Real-time Knowledge). 
+You have access to Google Search for real-time information.
+Use search for: current weather, news, sports scores, stock prices, or any time-sensitive data.
+Always be helpful, friendly, and professional.
+If anyone asks 'Who are you?', reply: 'I am S.P.A.R.K. — your Smart Personal Assistant for Real-time Knowledge. I'm powered by Google's Gemini AI.'"""
         
-        reply = response.get("output", "I'm sorry, I couldn't process that.")
+        # Build chat history for Gemini
+        gemini_history = []
+        for msg in history[:-1]:  # All except the last message
+            role = 'user' if msg.get('role') == 'user' else 'model'
+            gemini_history.append({
+                'role': role,
+                'parts': [msg.get('content', '')]
+            })
         
+        reply = None
+        
+        # Try with Search Grounding Model first
+        try:
+            print(f"DEBUG: Attempting chat with Search Model for message: {latest_message[:50]}...")
+            chat_session = chat_model_with_search.start_chat(history=gemini_history)
+            full_prompt = f"{system_prompt}\n\nUser: {latest_message}"
+            response = chat_session.send_message(full_prompt)
+            reply = response.text
+            print("✅ Successfully got response from Search Model")
+        except Exception as search_error:
+            print(f"⚠️ Search grounding model failed: {str(search_error)}")
+            # Fallback to Basic Model
+            try:
+                print("DEBUG: Falling back to Basic Model...")
+                chat_session = chat_model_basic.start_chat(history=gemini_history)
+                full_prompt = f"{system_prompt}\n\nUser: {latest_message}"
+                response = chat_session.send_message(full_prompt)
+                reply = response.text
+                print("✅ Successfully got response from Basic Model")
+            except Exception as basic_error:
+                print(f"❌ Basic model also failed: {str(basic_error)}")
+                raise basic_error
+
         if not reply:
-            reply = str(response)
+            reply = "I'm sorry, I couldn't process that response."
         
         return jsonify({
             'success': True,
@@ -294,6 +300,9 @@ def chat():
         })
     
     except Exception as e:
+        print(f"❌ CRITICAL Chat Endpoint Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 
