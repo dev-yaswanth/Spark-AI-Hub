@@ -2,8 +2,9 @@ import React from "react";
 import { Navbar } from "@/components/Navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ExternalLink, LucideIcon } from "lucide-react";
+import { ArrowLeft, ExternalLink, LucideIcon, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { TypewriterFeatures } from "@/components/TypewriterFeatures";
 
 interface ToolPageLayoutProps {
   icon: LucideIcon;
@@ -65,20 +66,24 @@ export function ToolPageLayout({
               {longDescription}
             </p>
 
-            {/* Features */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">Features</h2>
-              <ul className="grid gap-3 md:grid-cols-2">
-                {features.map((feature, index) => (
-                  <li
-                    key={index}
-                    className="flex items-center gap-3 text-muted-foreground"
-                  >
-                    <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
+            {/* Features with Side-by-Side Typewriter Animation */}
+            <div className="mb-12 p-6 rounded-2xl bg-card/40 border border-border/50 backdrop-blur-sm">
+              <h2 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                Capabilities
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <TypewriterFeatures
+                    features={features.filter((_, i) => i % 2 === 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <TypewriterFeatures
+                    features={features.filter((_, i) => i % 2 !== 0)}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Demo link */}

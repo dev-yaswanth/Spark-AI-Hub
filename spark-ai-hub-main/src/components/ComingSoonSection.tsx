@@ -11,32 +11,32 @@ const Spark = ({ className, style }: { className?: string, style?: React.CSSProp
 const upcomingTools = [
   {
     icon: BarChart3,
-    title: "AI Data Analyst",
-    description: "Automated data analysis, visualization, and insights generation from your datasets.",
+    title: "Data Analyst",
+    description: "Analyze and visualize your data automatically.",
     status: "comingSoon" as const,
   },
   {
     icon: Users,
-    title: "AI Interview Coach",
-    description: "Practice interviews with AI feedback on communication, confidence, and content.",
+    title: "Interview Coach",
+    description: "Practice interviews and get helpful feedback.",
     status: "comingSoon" as const,
   },
   {
     icon: Database,
-    title: "AI SQL Assistant",
-    description: "Natural language to SQL conversion with query optimization suggestions.",
+    title: "SQL Assistant",
+    description: "Create and improve database queries easily.",
     status: "comingSoon" as const,
   },
   {
     icon: Receipt,
-    title: "AI Bills Analyser",
-    description: "Upload and analyze your utility bills, invoices, and expenses for smart budgeting insights.",
+    title: "Bill Analyzer",
+    description: "Scan your bills to save money and budget.",
     status: "comingSoon" as const,
   },
   {
     icon: Sparkles,
-    title: "More AI Tools",
-    description: "We're constantly building new tools. Stay tuned for exciting additions.",
+    title: "Advanced Tools",
+    description: "We are constantly building new intelligent features.",
     status: "comingSoon" as const,
   },
 ];

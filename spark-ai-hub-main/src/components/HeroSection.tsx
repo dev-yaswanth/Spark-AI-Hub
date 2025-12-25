@@ -28,16 +28,8 @@ export function HeroSection() {
 
       {/* Content */}
       <div className="container relative z-10 px-4 py-20 text-center">
-        {/* Badge */}
-        <div className="animate-fade-up mb-8">
-          <Badge variant="tech" className="gap-2 px-4 py-2">
-            <Zap className="h-3.5 w-3.5 text-primary" />
-            Built with Python & AI
-          </Badge>
-        </div>
-
         {/* Logo / Brand */}
-        <div className="animate-fade-up-delay-1 mb-6">
+        <div className="animate-fade-up mb-6">
           <div className="inline-flex items-center gap-3 mb-2">
             <Sparkles className="h-10 w-10 text-primary glow-text" />
             <span className="text-5xl md:text-6xl font-bold tracking-tight">
@@ -52,16 +44,16 @@ export function HeroSection() {
         </div>
 
         {/* Main headline */}
-        <h1 className="animate-fade-up-delay-2 text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 max-w-4xl mx-auto">
-          Automate Intelligence with{" "}
-          <span className="gradient-text">Next-Gen AI</span>
+        <h1 className="animate-fade-up-delay-2 text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 max-w-4xl mx-auto leading-[1.1]">
+          Smart AI Tools for{" "}
+          <span className="gradient-text">Every Task</span>
         </h1>
 
         {/* Subheading */}
         <p className="animate-fade-up-delay-3 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-          A unified platform of smart AI tools for knowledge, productivity, and decision-making.
+          A clean, efficient platform for advanced chat, document analysis, and visual intelligence.
           <span className="block mt-2 text-primary/80 italic">
-            "Igniting intelligence. Powering decisions."
+            "Simple. Powerful. Intelligent."
           </span>
         </p>
 

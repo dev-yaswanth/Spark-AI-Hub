@@ -38,27 +38,38 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           <a
             href="/"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200"
           >
             Home
           </a>
           <a
             href="/#tools"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200"
           >
-            Tools
+            AI Tools
+          </a>
+          <a
+            href="/#tech"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200"
+          >
+            Tech
           </a>
           <a
             href="/#contact"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200"
           >
             Contact
           </a>
         </div>
 
         {/* CTA & Mobile Menu */}
-        <div className="flex items-center gap-2">
-          <Button variant="default" size="sm" className="hidden sm:flex" asChild>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="default"
+            size="sm"
+            className="hidden sm:flex rounded-full bg-foreground text-background hover:bg-foreground/90 transition-all px-6 border-2 border-primary/20"
+            asChild
+          >
             <a href="/#tools">Get Started</a>
           </Button>
 
@@ -66,12 +77,12 @@ export function Navbar() {
           <div className="md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-foreground">
+                <Button variant="ghost" size="icon" className="text-foreground hover:bg-primary/10">
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="bg-background/95 backdrop-blur-xl border-border/50">
-                <div className="flex flex-col gap-8 mt-12">
+                <div className="flex flex-col gap-6 mt-12">
                   <Link
                     to="/"
                     onClick={(e) => {
@@ -81,7 +92,7 @@ export function Navbar() {
                     className="flex items-center gap-2 mb-8"
                   >
                     <Sparkles className="h-5 w-5 text-primary" />
-                    <span className="text-xl font-bold">SPARK</span>
+                    <span className="text-xl font-bold tracking-tight">SPARK</span>
                   </Link>
                   <a
                     href="/"
@@ -90,21 +101,28 @@ export function Navbar() {
                   >
                     Home
                   </a>
-                  <Link
-                    to="/#tools"
+                  <a
+                    href="/#tools"
                     onClick={() => setIsOpen(false)}
-                    className="text-lg font-medium hover:text-primary transition-colors"
+                    className="text-lg font-medium text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Tools
-                  </Link>
-                  <Link
-                    to="/#contact"
+                    AI Tools
+                  </a>
+                  <a
+                    href="/#tech"
                     onClick={() => setIsOpen(false)}
-                    className="text-lg font-medium hover:text-primary transition-colors"
+                    className="text-lg font-medium text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Tech
+                  </a>
+                  <a
+                    href="/#contact"
+                    onClick={() => setIsOpen(false)}
+                    className="text-lg font-medium text-muted-foreground hover:text-primary transition-colors"
                   >
                     Contact
-                  </Link>
-                  <Button variant="hero" asChild className="mt-4">
+                  </a>
+                  <Button variant="hero" asChild className="mt-4 rounded-full">
                     <a href="/#tools" onClick={() => setIsOpen(false)}>Get Started</a>
                   </Button>
                 </div>

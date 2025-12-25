@@ -98,16 +98,16 @@ export default function ImageClassifierPage() {
   return (
     <ToolPageLayout
       icon={ImageIcon}
-      title="AI Image Identifier"
-      description="Upload a photo and S.P.A.R.K. will tell you what's in it!"
-      longDescription="Ever wondered what exactly is in an image? Our AI Image Identifier uses advanced vision models to scan your photos and identify objects, scenes, and themes instantly. It's like having a smart set of eyes that can recognize almost anything!"
+      title="Image Identifier"
+      description="Identify objects and scenes in any photo."
+      longDescription="Upload a photo to see what is in it instantly. Our assistant identifies objects, landmarks, and themes to give you clear results."
       features={[
-        "Identifies objects and scenes",
-        "Super fast results",
-        "Supports JPG and PNG",
-        "Gives you a confidence score",
-        "Simple upload and identify",
-        "Great for photo organizing",
+        "Identify objects",
+        "Get image tags",
+        "Describe scenes",
+        "Fast scan results",
+        "Recognize landmarks",
+        "Scan any photo",
       ]}
       status="live"
     >

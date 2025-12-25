@@ -96,16 +96,16 @@ export default function ResumeReviewerPage() {
   return (
     <ToolPageLayout
       icon={FileText}
-      title="AI Resume Critic"
-      description="Get brutally honest feedback on your resume and see your ATS match score."
-      longDescription="Stop wondering why you aren't getting interviews. Our AI Resume Critic tears apart your resume to find red flags and keyword gaps. We give you a 'Brutally Honest' score and tell you exactly how to fix your resume for your dream job description."
+      title="Resume Reviewer"
+      description="Get clear feedback to improve your resume."
+      longDescription="Upload your resume to get a simple score and clear tips. We help you find missing skills and fix formatting to help you land your next job."
       features={[
-        "Brutally honest feedback",
-        "ATS compatibility score",
-        "Specific job matching",
-        "Finds hidden red flags",
-        "Action plan to fix errors",
-        "Optimized for real recruiters",
+        "Score your resume",
+        "Get career tips",
+        "Find missing skills",
+        "Optimize for employers",
+        "Improve your formatting",
+        "Polish your language",
       ]}
       status="live"
     >

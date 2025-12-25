@@ -112,16 +112,16 @@ export default function ChatBotPage() {
   return (
     <ToolPageLayout
       icon={MessageSquare}
-      title="AI Chat Assistant"
-      description="Your friendly AI buddy for quick answers, coding help, and interesting conversations."
-      longDescription="S.P.A.R.K. is a smart conversational assistant designed to help you with anything. Whether you need a bug fixed in your code, help writing an email, or just want to know about current events, S.P.A.R.K. is ready to help 24/7 with a friendly personality."
+      title="AI Assistant"
+      description="Chat with a smart assistant to get answers and ideas."
+      longDescription="Ask S.P.A.R.K. anything. Get helpful answers, creative ideas, and assistance with your tasks in seconds."
       features={[
-        "Quick, real-time answers",
-        "Smart coding and debugging help",
-        "Friendly and helpful persona",
-        "Remembers your conversation context",
-        "Web search for latest information",
-        "Very easy to use",
+        "Get instant answers",
+        "Summarize complex topics",
+        "Explore new ideas",
+        "Solve problems faster",
+        "Draft emails easily",
+        "Learn something new",
       ]}
       status="live"
     >

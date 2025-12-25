@@ -19,8 +19,8 @@ export function ToolCard({ icon: Icon, title, description, status, href }: ToolC
       {/* Icon container */}
       <div
         className={`mb-4 inline-flex rounded-lg p-3 transition-all duration-300 ${isLive
-            ? "bg-primary/10 text-primary group-hover:bg-primary/20 group-hover:glow-orange-sm"
-            : "bg-muted text-muted-foreground"
+          ? "bg-primary/10 text-primary group-hover:bg-primary/20 group-hover:glow-orange-sm"
+          : "bg-muted text-muted-foreground"
           }`}
       >
         <Icon className="h-6 w-6" />
@@ -35,8 +35,8 @@ export function ToolCard({ icon: Icon, title, description, status, href }: ToolC
           >
             {title}
           </h3>
-          <Badge variant={isLive ? "live" : "comingSoon"}>
-            {isLive ? "Live" : "Coming Soon"}
+          <Badge variant={isLive ? (title.toLowerCase().includes("beta") ? "comingSoon" : "live") : "comingSoon"}>
+            {isLive ? (title.toLowerCase().includes("beta") ? "Beta" : "Live") : "Coming Soon"}
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
@@ -64,8 +64,8 @@ export function ToolCard({ icon: Icon, title, description, status, href }: ToolC
   );
 
   const cardClasses = `group relative rounded-xl border bg-card p-6 transition-all duration-500 card-glow gradient-border ${isLive
-      ? "border-border hover:border-primary/40 hover:bg-surface-elevated cursor-pointer"
-      : "border-border/50 opacity-70"
+    ? "border-border hover:border-primary/40 hover:bg-surface-elevated cursor-pointer"
+    : "border-border/50 opacity-70"
     }`;
 
   if (isLive && href) {
