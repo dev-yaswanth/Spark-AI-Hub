@@ -16,8 +16,9 @@ export function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="container flex h-16 items-center justify-between px-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 border-b-border/50 bg-background/70 backdrop-blur-xl">
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
+      <div className="container flex h-16 items-center justify-between px-4 relative z-10">
         <Link
           to="/"
           onClick={handleLogoClick}
@@ -35,39 +36,39 @@ export function Navbar() {
         </Link>
 
         {/* Navigation links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-12">
           <a
             href="/"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200"
+            className="text-sm font-extrabold text-foreground hover:text-primary transition-all duration-200 uppercase tracking-wider"
           >
             Home
           </a>
           <a
             href="/#tools"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200"
+            className="text-sm font-extrabold text-foreground hover:text-primary transition-all duration-200 uppercase tracking-wider"
           >
             AI Tools
           </a>
           <a
             href="/#tech"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200"
+            className="text-sm font-extrabold text-foreground hover:text-primary transition-all duration-200 uppercase tracking-wider"
           >
             Tech
           </a>
           <a
             href="/#contact"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200"
+            className="text-sm font-extrabold text-foreground hover:text-primary transition-all duration-200 uppercase tracking-wider"
           >
             Contact
           </a>
         </div>
 
         {/* CTA & Mobile Menu */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <Button
             variant="default"
             size="sm"
-            className="hidden sm:flex rounded-full bg-foreground text-background hover:bg-foreground/90 transition-all px-6 border-2 border-primary/20"
+            className="hidden sm:flex rounded-full bg-[#0a0a0a] text-[#ef6d2e] hover:bg-[#1a1a1a] transition-all px-8 border border-[#ef6d2e]/50 font-extrabold text-sm h-10 shadow-[0_0_20px_rgba(239,109,46,0.2)] hover:shadow-[0_0_25px_rgba(239,109,46,0.3)]"
             asChild
           >
             <a href="/#tools">Get Started</a>
@@ -97,32 +98,36 @@ export function Navbar() {
                   <a
                     href="/"
                     onClick={() => setIsOpen(false)}
-                    className="text-lg font-medium text-muted-foreground hover:text-primary transition-colors"
+                    className="text-lg font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest"
                   >
                     Home
                   </a>
                   <a
                     href="/#tools"
                     onClick={() => setIsOpen(false)}
-                    className="text-lg font-medium text-muted-foreground hover:text-primary transition-colors"
+                    className="text-lg font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest"
                   >
                     AI Tools
                   </a>
                   <a
                     href="/#tech"
                     onClick={() => setIsOpen(false)}
-                    className="text-lg font-medium text-muted-foreground hover:text-primary transition-colors"
+                    className="text-lg font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest"
                   >
                     Tech
                   </a>
                   <a
                     href="/#contact"
                     onClick={() => setIsOpen(false)}
-                    className="text-lg font-medium text-muted-foreground hover:text-primary transition-colors"
+                    className="text-lg font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest"
                   >
                     Contact
                   </a>
-                  <Button variant="hero" asChild className="mt-4 rounded-full">
+                  <Button
+                    variant="hero"
+                    asChild
+                    className="mt-4 rounded-full bg-[#0a0a0a] text-[#ef6d2e] border border-[#ef6d2e]/40 font-bold"
+                  >
                     <a href="/#tools" onClick={() => setIsOpen(false)}>Get Started</a>
                   </Button>
                 </div>

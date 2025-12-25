@@ -37,26 +37,18 @@ export function Footer() {
             Igniting intelligence. Powering decisions.
           </p>
 
-          {/* Navigation placeholders */}
-          <div className="flex gap-8 text-sm text-muted-foreground mb-8">
-            <Link to="/" className="hover:text-primary transition-colors">
+          {/* Navigation links */}
+          <div className="flex gap-8 text-sm font-bold text-muted-foreground mb-8">
+            <a href="/" className="hover:text-primary transition-colors uppercase tracking-wider">
               Home
-            </Link>
-            <Link to="/#tools" className="hover:text-primary transition-colors">
-              Tools
-            </Link>
-            <Link to="/#contact" className="hover:text-primary transition-colors">
+            </a>
+            <a href="/#tools" className="hover:text-primary transition-colors uppercase tracking-wider">
+              AI Tools
+            </a>
+            <a href="/#contact" className="hover:text-primary transition-colors uppercase tracking-wider">
               Contact
-            </Link>
+            </a>
           </div>
-
-          {/* Built with love */}
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span>Built with</span>
-            <Heart className="h-3.5 w-3.5 text-primary fill-primary" />
-            <span>using AI</span>
-          </div>
-
           {/* Copyright */}
           <p className="text-xs text-muted-foreground/50 mt-4">
             © {new Date().getFullYear()} SPARK. All rights reserved.
