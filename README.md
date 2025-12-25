@@ -1,3 +1,13 @@
+---
+title: Spark AI Backend
+emoji: ⚡
+colorFrom: yellow
+colorTo: orange
+sdk: docker
+pinned: false
+app_port: 7860
+---
+
 # S.P.A.R.K. - Smart Personal Assistant for Real-time Knowledge
 
 S.P.A.R.K. is a powerful AI backend API built with Flask, seamlessly integrating multiple advanced AI capabilities into a single cohesive service. It leverages Google's Gemini 2.0 Flash for natural language processing and generic task reasoning, MobileNetV2/TensorFlow for computer vision, and LangChain for agentic capabilities including real-time web search.
