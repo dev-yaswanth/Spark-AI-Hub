@@ -401,7 +401,6 @@ def contact():
     """Endpoint for contact form submission"""
     try:
         data = request.get_json()
-        
         if not data:
             return jsonify({'error': 'No data provided'}), 400
             
@@ -412,7 +411,6 @@ def contact():
         if not name or not email or not message:
             return jsonify({'error': 'All fields are required'}), 400
             
-        # Create message object
         new_message = {
             'timestamp': datetime.now().isoformat(),
             'name': name,
@@ -420,45 +418,42 @@ def contact():
             'message': message
         }
         
-        # Ensure data directory exists
-        os.makedirs('data', exist_ok=True)
-        file_path = 'data/messages.json'
-        
-        # Load existing messages or start new list
-        messages = []
-        if os.path.exists(file_path):
-            with open(file_path, 'r') as f:
-                try:
-                    messages = json.load(f)
-                except json.JSONDecodeError:
-                    messages = []
-        
-        # Append new message
-        messages.append(new_message)
-        
-        # Save to Supabase if available
+        # 1. Try Supabase (Primary)
         if supabase:
             try:
                 supabase.table('messages').insert(new_message).execute()
                 print(f"✅ Message from {name} saved to Supabase")
+                return jsonify({'success': True, 'message': 'Sent via Supabase'})
             except Exception as e:
-                print(f"❌ Failed to save to Supabase: {str(e)}")
-        
-        # Save back to local file (as backup)
-        with open(file_path, 'w') as f:
-            json.dump(messages, f, indent=4)
+                print(f"❌ Supabase save failed: {str(e)}")
+
+        # 2. Try Local Fallback (Secondary)
+        try:
+            # Use /tmp on Spaces to avoid Permission Denied
+            data_dir = '/tmp/spark_data' if os.name != 'nt' else 'data'
+            os.makedirs(data_dir, exist_ok=True)
+            file_path = os.path.join(data_dir, 'messages.json')
             
-        # Log to console
-        print(f"\n📬 NEW MESSAGE RECEIVED from {name} ({email})")
-        print(f"Message: {message[:100]}{'...' if len(message) > 100 else ''}")
-        print("-" * 30)
-        
-        return jsonify({
-            'success': True,
-            'message': 'Thank you! Your message has been saved.'
-        })
-        
+            messages = []
+            if os.path.exists(file_path):
+                with open(file_path, 'r') as f:
+                    try:
+                        messages = json.load(f)
+                    except:
+                        messages = []
+            
+            messages.append(new_message)
+            with open(file_path, 'w') as f:
+                json.dump(messages, f, indent=4)
+            
+            print(f"⚠️ Message from {name} saved to LOCAL storage")
+            return jsonify({'success': True, 'message': 'Sent via Local Storage'})
+        except Exception as local_err:
+            print(f"❌ Local storage also failed: {str(local_err)}")
+            return jsonify({'error': 'Could not save message anywhere'}), 500
+
     except Exception as e:
+        print(f"❌ Contact endpoint CRITICAL error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 
