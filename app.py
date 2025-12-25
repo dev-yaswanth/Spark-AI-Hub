@@ -412,7 +412,6 @@ def contact():
             return jsonify({'error': 'All fields are required'}), 400
             
         new_message = {
-            'timestamp': datetime.now().isoformat(),
             'name': name,
             'email': email,
             'message': message
@@ -421,6 +420,7 @@ def contact():
         # 1. Try Supabase (Primary)
         if supabase:
             try:
+                # We don't include timestamp as it's handled by 'created_at' default in Supabase
                 supabase.table('messages').insert(new_message).execute()
                 print(f"✅ Message from {name} saved to Supabase")
                 return jsonify({'success': True, 'message': 'Sent via Supabase'})
@@ -429,6 +429,10 @@ def contact():
 
         # 2. Try Local Fallback (Secondary)
         try:
+            # For local fallback, we still want a timestamp for our JSON file
+            local_message = new_message.copy()
+            local_message['timestamp'] = datetime.now().isoformat()
+            
             # Use /tmp on Spaces to avoid Permission Denied
             data_dir = '/tmp/spark_data' if os.name != 'nt' else 'data'
             os.makedirs(data_dir, exist_ok=True)
@@ -442,7 +446,7 @@ def contact():
                     except:
                         messages = []
             
-            messages.append(new_message)
+            messages.append(local_message)
             with open(file_path, 'w') as f:
                 json.dump(messages, f, indent=4)
             
