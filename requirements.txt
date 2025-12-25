@@ -13,10 +13,10 @@ PyPDF2
 google-generativeai>=0.7.0
 
 # LangChain
-langchain>=0.3.0
-langchain-core>=0.3.0
-langchain-community>=0.3.0
-langchain-google-genai>=1.0.3
+langchain<0.3.0
+langchain-core<0.3.0
+langchain-community<0.3.0
+langchain-google-genai
 
 # Environment Variables
 python-dotenv>=1.0.1
