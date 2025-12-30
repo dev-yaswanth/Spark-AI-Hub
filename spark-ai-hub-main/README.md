@@ -1,73 +1,60 @@
-# Welcome to your Lovable project
+# ⚡ SPARK - Smart Personal Assistant for Real-time Knowledge
 
-## Project info
+**Igniting Intelligence. Powering Decisions.**
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+SPARK is a unified AI ecosystem designed to streamline knowledge retrieval, document analysis, and productivity. Built for speed and precision, it brings multiple cutting-edge AI tools into a single, sleek interface.
 
-## How can I edit this code?
+## 🚀 Key Features
 
-There are several ways of editing your application.
+- **🧠 Knowledge Assistant (RAG):** Chat with your documents and get context-aware answers.
+- **🔍 Real-time Search:** AI-powered search that provides up-to-the-minute information from the web.
+- **📄 Resume Reviewer:** Professional AI analysis of resumes with actionable feedback.
+- **🖼️ Image Classifier:** Advanced computer vision for instant object and scene identification.
+- **⚡ Ultra-fast UX:** Built with Vite and React for a near-instantaneous user experience.
 
-**Use Lovable**
+## 🛠️ Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- **Frontend:** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vitejs.dev/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/)
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
+- **AI/LLM:** [Google Gemini 1.5 Pro/Flash](https://deepmind.google/technologies/gemini/), [LangChain](https://www.langchain.com/)
+- **Deployment:** [Vercel](https://vercel.com/) (Frontend), [Render](https://render.com/) (Backend)
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🔧 Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js (v18 or higher)
+- npm or bun
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Local Setup
 
-Follow these steps:
+1. **Clone the repository:**
+   ```sh
+   git clone <YOUR_GIT_URL>
+   cd spark-ai-hub
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. **Configure Environment Variables:**
+   Create a `.env` file in the root directory and add your API keys:
+   ```env
+   VITE_API_URL=your_backend_url
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+4. **Run the development server:**
+   ```sh
+   npm run dev
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 🌐 Live Demo
 
-**Edit a file directly in GitHub**
+Check out the live version here: [SPARK Hub](https://spark-ai-hub.vercel.app/) (Replace with your actual URL)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Built with ❤️ by [Your Name/GitHub Handle]
