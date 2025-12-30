@@ -1,0 +1,30 @@
+https://dev-yaswanth-spark.hf.space
+
+here are the exact steps to set everything back up.
+
+1. Re-create the Virtual Environment
+Open your terminal in the spark root directory and run:
+
+powershell
+# Create the environment
+python -m venv .venv
+# Activate it
+.\.venv\Scripts\Activate.ps1
+2. Re-install Python Dependencies
+With the environment activated, install the required libraries:
+
+powershell
+pip install -r requirements.txt
+3. Run the Backend
+Start the Flask server:
+
+powershell
+# Ensure you are in the root directory
+python app.py
+4. Run the Frontend
+In a second terminal window, navigate to the frontend folder and start the development server:
+
+powershell
+cd spark-ai-hub-main
+npm install    # (Only if you deleted node_modules too)
+npm run dev
